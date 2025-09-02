@@ -1,8 +1,19 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
+import box1 from './components/Box.vue'
+import singapore from './assets/singapore.jpg'
+import {ref} from 'vue'
+const url = ref(singapore)
+import life from './components/lifecircle.vue'
+import computed from './components/computed.vue'
 </script>
 
 <template>
+<life/>
+<box1/>
+<computed/>
+  <!--
+  <HelloWorld msg="Vite + Vue" />
   <div>
     <a href="https://vite.dev" target="_blank">
       <img src="/vite.svg" class="logo" alt="Vite logo" />
@@ -11,7 +22,9 @@ import HelloWorld from './components/HelloWorld.vue'
       <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
     </a>
   </div>
-  <HelloWorld msg="Vite + Vue" />
+  <img src="./assets/sea1.jpg" alt="">
+  <img src="../public/sea2.jpg" alt="">
+  <img :src="url" alt=""> -->
 </template>
 
 <style scoped>
