@@ -1,7 +1,21 @@
 <script setup>
 import {useNoteStore} from '../stores/NoteStore'
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 const notestore = useNoteStore();
+let selectedNoteId = ref(0)
+let deleteModal = null;
+// 初始化模態框
+onMounted(function(){
+   deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'))
+})
+function showDeleteModal(noteId){
+    selectedNoteId.value = noteId;
+    deleteModal.show();
+}
+function confirmDelete(){
+    notestore.deleteNote(selectedNoteId.value);
+    deleteModal.hide();
+}
 </script>
 <template>
     <div class="sideBar">
@@ -17,9 +31,13 @@ const notestore = useNoteStore();
                     <h5 class="text-center"><i class="fa-solid fa-star"></i>&nbsp;&nbsp;Important</h5>
                     <ul class="list-group mt-4">
                         <li class="list-group-item d-flex justify-content-between" v-for="note in notestore.pinnedNotes">
-                            <i class="fa-solid fa-thumbtack me-3 rotate" @click="notestore.markedPinned(note.id)"></i>
-                            <span>{{note.title}}</span>
-                            <i class="fa-solid fa-trash" @click="notestore.deleteNote(note.id)"></i>
+                            <router-link :to="{name:'EditNote', params:{id:note.id}}">
+                            <span>{{ note.title }}</span>
+                             </router-link>
+                             <div class="icon_group">
+                                <i class="fa-solid fa-thumbtack me-3 rotate" @click="notestore.markedPinned(note.id)"></i>
+                                <i class="fa-solid fa-trash" @click="showDeleteModal(note.id)"></i>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -27,9 +45,13 @@ const notestore = useNoteStore();
                     <h5 class="text-center"><i class="fa-solid fa-list"></i>&nbsp;General</h5>
                     <ul class="list-group mt-4 ">
                         <li class="list-group-item d-flex justify-content-between" v-for="note in notestore.unPinnedNotes">
-                            <i class="fa-solid fa-thumbtack me-3" @click="notestore.markedPinned(note.id)"></i>
-                            <span>{{note.title}}</span>
-                            <i class="fa-solid fa-trash" @click="notestore.deleteNote(note.id)"></i>
+                             <router-link :to="{name:'EditNote', params:{id:note.id}}">
+                            <span>{{ note.title }}</span>
+                             </router-link>
+                             <div class="icon_group">
+                                <i class="fa-solid fa-thumbtack me-3" @click="notestore.markedPinned(note.id)"></i>
+                                <i class="fa-solid fa-trash" @click="showDeleteModal(note.id)"></i>
+                             </div>
                         </li>
                     </ul>
                 </div>
@@ -49,7 +71,7 @@ const notestore = useNoteStore();
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Confirm</button>
+            <button type="button" class="btn btn-primary" @click="confirmDelete()">Confirm</button>
         </div>
         </div>
     </div>

@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import SearchNote from '../components/SearchNote.vue';
 
 export const useNoteStore = defineStore("notes", {
     state: () => ({
@@ -31,7 +32,9 @@ export const useNoteStore = defineStore("notes", {
             "title": "Work Plan",
             "content": "本週目標是完成所有的專案任務，並準時提交給客戶。",
             "pinned": true
-        }],
+        }
+        ],
+        searchResults: []
     }),
     getters: {
         pinnedNotes(state) {
@@ -49,7 +52,30 @@ export const useNoteStore = defineStore("notes", {
         deleteNote(id) {
             const index = this.notes.findIndex(note => note.id === id);
             this.notes.splice(index, 1);
-        }
-
+        },
+        addNote(newTitle, newContent) {
+            if (newTitle === null) return false;
+            const last_id = this.notes.length + 1;
+            this.notes.push({
+                id: last_id,
+                title: newTitle,
+                content: newContent,
+                pinned: false
+            })
+            return true;
+        },
+        editNote(id, newTitle, newContent) {
+            const note = this.notes.find(note => note.id === id)
+            if (note !== -1) {
+                note.title = newTitle
+                note.content = newContent
+                return true
+            }
+        },
+        searchNotes(keyword) {
+            this.searchResults = this.notes.filter(
+                note => note.title.includes(keyword) || note.content.includes(keyword));
+            console.log(this.searchResults);
+        },
     }
 })

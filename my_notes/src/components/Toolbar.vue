@@ -1,5 +1,14 @@
 <script setup>
-
+import { ref } from 'vue';
+import {useNoteStore} from '../stores/NoteStore'
+import { useRouter} from 'vue-router'
+const notestore = useNoteStore();
+const router = useRouter()
+const keyword = ref('');
+function searchNotes(){
+    notestore.searchNotes(keyword.value);
+    router.push({ name: 'SearchNote' });
+}
 </script>
 <template>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -12,8 +21,8 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+      <form class="d-flex" @submit.prevent="searchNotes" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="keyword" @keydown.enter="searchNotes"/>
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </div>
